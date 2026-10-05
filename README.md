@@ -37,7 +37,7 @@ the human-in-the-loop checkpoint is the core of JobScout's security design.
                  │  intake → search → filter → tag → score →    │
                  │  draft → HITL gate → memory                  │
                  └──────┬──────────────────────┬────────────────┘
-              Claude API│                      │ MCP (stdio)
+              Gemini API│                      │ MCP (stdio)
         ┌───────────────▼───────┐   ┌──────────▼──────────────────┐
         │ Specialist sub-agents │   │ Job-Search MCP Server       │
         │  · search (no LLM)    │   │  search_jobs                │
@@ -78,14 +78,14 @@ no matter how many boards exist behind it (the NxM integration problem).
 
 ## Setup
 
-Requires Python 3.11+ and an Anthropic API key.
+Requires Python 3.11+ and a Gemini API key.
 
 ```bash
 git clone <this-repo> && cd <this-repo>
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-cp .env.example .env          # then put your ANTHROPIC_API_KEY in .env
+cp .env.example .env          # then put your GEMINI_API_KEY in .env
 
 # Optional, only if you want Playwright liveness verification (off by
 # default — see "Liveness Verification" below):
@@ -103,9 +103,9 @@ real text layer. You can also drop past cover letters or emails into
 `profile/documents/writing_samples/` (or upload them on the Profile
 page) — see "Voice Matching" below.
 
-**Cost tip:** the agents default to `claude-opus-4-8`. For development, demo
-runs, and eval iterations, set `JOBSCOUT_MODEL=claude-haiku-4-5` in `.env` —
-a full run typically costs a few cents instead of tens of cents. Structured
+**Cost tip:** the agents default to `gemini-2.5-flash`. Override it with
+`GEMINI_MODEL` in `.env` when you need a different Gemini model. The
+Google GenAI SDK reads `GEMINI_API_KEY` from the environment. Structured
 outputs work identically on Haiku; the code automatically skips the
 `thinking` param there since Haiku doesn't support extended thinking.
 
@@ -461,7 +461,7 @@ Upload past cover letters, emails, or anything else in your own words —
 Profile page uploader, or drop files into
 `profile/documents/writing_samples/` — and drafted cover letters and
 tailored CVs will sound like you actually wrote them, not like the
-default Claude voice.
+default Gemini voice.
 
 How it stays honest: `skills/voice-matching/SKILL.md` distills your
 samples into a compact descriptor of **style only** — sentence rhythm,

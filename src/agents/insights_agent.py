@@ -10,13 +10,12 @@ there is for scoring/drafting.
 
 from __future__ import annotations
 
-from anthropic import Anthropic
-
 from . import MODEL, load_skill, thinking_kwargs
 from ..guardrails import audit
+from ..gemini import Gemini
 
 
-def suggest_focus(client: Anthropic, gap: dict) -> str:
+def suggest_focus(client: Gemini, gap: dict) -> str:
     """gap is one row from insights.aggregate_dimension_gaps() — the
     weakest dimension is the natural choice, but any row works."""
     audit("llm.suggest_focus", {"dimension": gap["dimension"],

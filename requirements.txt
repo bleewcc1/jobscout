@@ -1,4 +1,4 @@
-anthropic>=0.60
+google-genai>=1.30
 # <2 is load-bearing: mcp 2.0 removed mcp.server.fastmcp (renamed
 # mcp.server.mcpserver), which mcp-server/job_search_server.py imports.
 mcp[cli]>=1.9,<2

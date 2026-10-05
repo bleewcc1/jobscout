@@ -21,10 +21,9 @@ from __future__ import annotations
 
 import json
 
-from anthropic import Anthropic
-
 from . import MODEL, load_skill, thinking_kwargs
 from ..guardrails import audit
+from ..gemini import Gemini
 
 def _style_line(communication_style: str, voice_profile: str = "") -> str:
     """Formats the optional tone guidance for the drafting/review/CV
@@ -59,7 +58,7 @@ DRAFT_SCHEMA = {
 }
 
 
-def draft_package(client: Anthropic, skills_profile: str, job: dict,
+def draft_package(client: Gemini, skills_profile: str, job: dict,
                   scoring: dict, communication_style: str = "",
                   voice_profile: str = "") -> dict:
     audit("llm.draft_package", {"job_id": job["id"], "title": job["title"]})
@@ -118,7 +117,7 @@ REVIEW_SCHEMA = {
 }
 
 
-def review_draft(client: Anthropic, skills_profile: str, job: dict,
+def review_draft(client: Gemini, skills_profile: str, job: dict,
                  cover_letter: str, communication_style: str = "",
                  voice_profile: str = "") -> dict:
     """Fresh-context critique of an already-drafted cover letter. Call
@@ -190,7 +189,7 @@ CV_SCHEMA = {
 }
 
 
-def tailor_cv(client: Anthropic, masked_resume: str, skills_profile: str,
+def tailor_cv(client: Gemini, masked_resume: str, skills_profile: str,
              job: dict, voice_profile: str = "") -> dict:
     """Restructure the candidate's REAL resume into ATS-friendly sections
     tailored to one job — selection, reordering, and rephrasing only,

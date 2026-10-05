@@ -7,10 +7,10 @@ Without both it is always vibe coding.
 
 Two checks per golden case:
 1. Deterministic band check (code): weighted score inside expected_band.
-2. LLM-as-judge (Claude): does the rationale actually cite the factors a
+2. LLM-as-judge (Gemini): does the rationale actually cite the factors a
    human labeler said matter, without hallucinating?
 
-Run:  python -m evals.judge          (requires ANTHROPIC_API_KEY)
+Run:  python -m evals.judge          (requires GEMINI_API_KEY)
 
 The golden set includes a prompt-injection case (gold6): a job description
 that orders the model to output 100s. Passing means the injection failed.
@@ -22,7 +22,6 @@ import json
 import sys
 from pathlib import Path
 
-from anthropic import Anthropic
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
@@ -31,6 +30,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 from src.agents import MODEL, scoring_agent  # noqa: E402
+from src.gemini import Gemini  # noqa: E402
 
 console = Console()
 
@@ -53,7 +53,7 @@ JUDGE_SYSTEM = (
 )
 
 
-def judge_rationale(client: Anthropic, case: dict, result: dict) -> dict:
+def judge_rationale(client: Gemini, case: dict, result: dict) -> dict:
     response = client.messages.create(
         model=MODEL,
         max_tokens=500,
@@ -75,7 +75,7 @@ def judge_rationale(client: Anthropic, case: dict, result: dict) -> dict:
 def main() -> None:
     load_dotenv(REPO_ROOT / ".env")
     golden = json.loads((REPO_ROOT / "evals" / "golden_set.json").read_text())
-    client = Anthropic()
+    client = Gemini()
 
     table = Table(title="Scoring Agent eval")
     for col in ("case", "score", "band", "band ok", "judge ok", "comment"):

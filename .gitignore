@@ -23,6 +23,8 @@ venv/
 
 # OS / editor
 .DS_Store
+# macOS AppleDouble metadata files (for example ._*.py and .___*)
+._*
 .vscode/
 .idea/
 

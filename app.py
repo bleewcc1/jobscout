@@ -627,8 +627,8 @@ def page_run() -> None:
     if profile is None:
         st.warning("No profile yet — create one on the **👤 Profile** page first.")
         return
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        st.error("`ANTHROPIC_API_KEY` is not set. Add it to `.env` "
+    if not os.getenv("GEMINI_API_KEY"):
+        st.error("`GEMINI_API_KEY` is not set. Add it to `.env` "
                  "(see `.env.example`), then restart the app.")
         return
 
@@ -658,8 +658,8 @@ def page_run() -> None:
                            email=cand.get("email", ""),
                            phone=cand.get("phone", ""),
                            address=cand.get("address", ""))
-        from anthropic import Anthropic
-        st.session_state["client"] = Anthropic()
+        from src.gemini import Gemini
+        st.session_state["client"] = Gemini()
 
         with st.status("Running the agent pipeline…", expanded=True) as status:
             target = int(max_score)
@@ -800,8 +800,8 @@ def page_run() -> None:
 
     masker = PIIMasker(**st.session_state.get("masker_fields", {}))
     if "client" not in st.session_state:
-        from anthropic import Anthropic
-        st.session_state["client"] = Anthropic()
+        from src.gemini import Gemini
+        st.session_state["client"] = Gemini()
     communication_style = profile.get("candidate", {}).get("communication_style", "")
     for package in scored:
         render_package(package, threshold, masker,
@@ -835,8 +835,8 @@ def render_skill_gaps(entries: list[dict]) -> None:
     if st.button(f"🎯 Get suggestions for {worst['dimension'].replace('_', ' ')}",
                 key="suggest_focus"):
         if "client" not in st.session_state:
-            from anthropic import Anthropic
-            st.session_state["client"] = Anthropic()
+            from src.gemini import Gemini
+            st.session_state["client"] = Gemini()
         with st.spinner("Thinking about what would actually move this number…"):
             suggestion = insights_agent.suggest_focus(st.session_state["client"], worst)
         st.info(suggestion)

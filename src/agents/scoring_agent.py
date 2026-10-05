@@ -1,4 +1,4 @@
-"""Scoring Agent: resume analysis + per-job match scoring via Claude.
+"""Scoring Agent: resume analysis + per-job match scoring via Gemini.
 
 COURSE CONCEPT (multi-agent system): a specialist sub-agent with its own
 skill, prompt, and structured-output contract. The orchestrator dispatches
@@ -17,10 +17,9 @@ from __future__ import annotations
 
 import json
 
-from anthropic import Anthropic
-
 from . import MODEL, load_skill, thinking_kwargs
 from ..guardrails import audit
+from ..gemini import Gemini
 
 DIMENSIONS = ("skills_match", "role_title_match", "industry_match",
               "location_match", "seniority_match")
@@ -52,7 +51,7 @@ SCORE_SCHEMA = {
 }
 
 
-def extract_voice_profile(client: Anthropic, masked_samples: str) -> str:
+def extract_voice_profile(client: Gemini, masked_samples: str) -> str:
     """One call per session: distill the candidate's own (masked) past
     writing into a compact style descriptor, reused for every draft this
     session — same token-efficiency reasoning as analyze_resume(). Empty
@@ -70,7 +69,7 @@ def extract_voice_profile(client: Anthropic, masked_samples: str) -> str:
     return next(b.text for b in response.content if b.type == "text")
 
 
-def analyze_resume(client: Anthropic, masked_resume: str, summary: str) -> str:
+def analyze_resume(client: Gemini, masked_resume: str, summary: str) -> str:
     """One call per session: condense the masked resume into a dense skills
     profile that is reused for every job scored (token efficiency)."""
     audit("llm.analyze_resume", {"chars": len(masked_resume)})
@@ -90,7 +89,7 @@ def analyze_resume(client: Anthropic, masked_resume: str, summary: str) -> str:
     return next(b.text for b in response.content if b.type == "text")
 
 
-def score_job(client: Anthropic, skills_profile: str, preferences: dict,
+def score_job(client: Gemini, skills_profile: str, preferences: dict,
               job: dict, weights: dict) -> dict:
     """Score one job. Returns dimensions, deterministic weighted total,
     and a plain-language summary."""

@@ -1,7 +1,7 @@
 """JobScout orchestrator — the agent loop.
 
 COURSE CONCEPT (agent architecture): the five components of an agent are
-all here — MODEL (Claude via the Anthropic SDK), TOOLS (the job-search
+all here — MODEL (Gemini via the Google GenAI SDK), TOOLS (the job-search
 MCP server), MEMORY (.jobscout_memory.json), ORCHESTRATION (this loop),
 and DEPLOYMENT (Dockerfile + README path-to-production).
 
@@ -23,7 +23,6 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from anthropic import Anthropic
 from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -45,6 +44,7 @@ from .memory import Memory
 from .pipeline import MAX_SEARCH_ROUNDS
 from .records import Records
 from . import notion_sync
+from .gemini import Gemini
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CV_OUTPUT_DIR = REPO_ROOT / "output" / "cvs"
@@ -262,7 +262,7 @@ async def run(max_score: int, dry_run: bool, min_matches: int | None = None,
         return
 
     # ---- 4. Score (masked resume; per-dimension; weighted in code) --------
-    client = Anthropic()  # key resolved from env / .env — never hardcoded
+    client = Gemini()  # key resolved from env / .env — never hardcoded
     resume_text = masker.mask(extract_profile_text(profile))
     summary = masker.mask(candidate.get("summary", ""))
     console.print("[bold cyan]🧠 Analyzing resume + supplementary "

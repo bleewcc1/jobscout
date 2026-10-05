@@ -27,7 +27,7 @@ JobScout is a personal job-search **concierge agent**. It:
 │ (agent loop)│           │  search_jobs / get_job_details│
 └─────┬──────┘           │  / list_sources               │
       │                   └───────┬──────────────────────┘
-      │ Claude API                │ concurrent fan-out
+      │ Gemini API                │ concurrent fan-out
 ┌─────▼──────────┐        ┌───────▼───────────────────────┐
 │ Sub-agents     │        │ Adapters: remoteok, themuse,  │
 │  search        │        │ remotive, arbeitnow,          │
@@ -40,7 +40,7 @@ Memory (.jobscout_memory.json) dedupes across sessions.
 
 ### Agent loop (src/orchestrator.py)
 
-Five components per the course framework: **model** (Claude API),
+Five components per the course framework: **model** (Gemini API),
 **tools** (MCP server), **memory** (JSON state file), **orchestration**
 (the loop), **deployment** (Docker + docs).
 

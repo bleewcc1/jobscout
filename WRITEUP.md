@@ -39,7 +39,7 @@ The pipeline has three kinds of work in it, and they don't want the same tool.
 Orchestrator (src/orchestrator.py)
   intake → search (MCP) → deterministic filter → score → draft → HITL gate → memory
         │                              │
-   Claude API                    MCP (stdio)
+   Gemini API                    MCP (stdio)
         │                              │
  Specialist sub-agents          Job-Search MCP Server
   · search (no LLM)               search_jobs / get_job_details / list_sources
@@ -90,7 +90,7 @@ That bug is a better argument for tests and evals than any amount of code review
 - **No auto-submit, by design.** JobScout prepares a complete application package; you decide whether to send it, and you send it yourself.
 - **Keyword matching is title-based and literal**, which trades some recall for precision — a deliberate choice after the bug above, but it means adjacent titles (e.g., "Data Scientist" for an "ML Engineer" search) won't surface unless you add them to your target roles.
 - **Tier B sources** (Adzuna, USAJOBS) are fully implemented and enable automatically when their free API keys are present, but were exercised less in testing than the five keyless Tier A boards.
-- **Scoring costs tokens**, so runs cap at a configurable number of jobs (`--max-score`, default 6); Claude Haiku keeps a full run to a few cents for anyone iterating on it.
+- **Scoring costs tokens**, so runs cap at a configurable number of jobs (`--max-score`, default 6); Gemini Flash keeps a full run inexpensive for anyone iterating on it.
 
 ## What's next
 

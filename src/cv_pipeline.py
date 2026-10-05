@@ -7,14 +7,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from anthropic import Anthropic
-
 from .agents import drafting_agent
 from .cv_render import render_cv_pdf
 from .guardrails import PIIMasker
+from .gemini import Gemini
 
 
-def generate_cv_pdf(client: Anthropic, masked_resume: str, skills_profile: str,
+def generate_cv_pdf(client: Gemini, masked_resume: str, skills_profile: str,
                     job: dict, candidate: dict, masker: PIIMasker,
                     output_dir: Path, voice_profile: str = "") -> str:
     """Tailor + render + write to `output_dir/<job_id>.pdf`. Returns the
